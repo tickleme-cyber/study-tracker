@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Subjects — Minimalist Study Planner{% endblock %}
+
+{% block content %}
+<section class="page-section">
+    <div class="page-container">
+        <div class="page-header">
+            <h1 class="page-title">📚 <span class="text-gradient">Subjects</span></h1>
+            <p class="page-subtitle">Organize your studies by subject</p>
+        </div>
+
+        <div class="subjects-layout">
+            <div class="dash-card">
+                <h3 class="dash-card-title">+ Add Subject</h3>
+                <form method="post" class="auth-form">
+                    {% csrf_token %}
+                    {% for field in form %}
+                    <div class="form-group">
+                        <label class="form-label">{{ field.label }}</label>
+                        {{ field }}
+                    </div>
+                    {% endfor %}
+                    <button type="submit" class="btn btn-primary btn-full">Add Subject</button>
+                </form>
+            </div>
+
+            <div class="subjects-grid">
+                {% for subject in subjects %}
+                <div class="subject-card" style="border-top: 3px solid {{ subject.color }};">
+                    <div class="subject-icon-large">{{ subject.icon }}</div>
+                    <h3 class="subject-name">{{ subject.name }}</h3>
+                    <div class="subject-stats">
+                        <span>{{ subject.sessions.count }} sessions</span>
+                        <span>{{ subject.decks.count }} decks</span>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="empty-state-large">
+                    <span class="empty-icon">📚</span>
+                    <h3>No subjects yet</h3>
+                    <p>Add your first subject to organize your study sessions!</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

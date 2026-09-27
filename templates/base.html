@@ -1,0 +1,112 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Minimalist Study Planner — A clean, focused study tracking and planning platform with smart tools.">
+    <title>{% block title %}Minimalist Study Planner{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="{% url 'landing' %}" class="nav-brand">
+                <div class="nav-logo">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                        <rect width="24" height="24" rx="7" fill="url(#logo-grad)"/>
+                        <path d="M8 8h8M8 12h8M8 16h5" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+                        <defs>
+                            <linearGradient id="logo-grad" x1="0" y1="0" x2="24" y2="24">
+                                <stop stop-color="#34d399"/>
+                                <stop offset="1" stop-color="#06b6d4"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <span class="brand-name">minimalist study planner</span>
+            </a>
+
+            <div class="nav-links" id="nav-links">
+                <a href="{% url 'landing' %}#features" class="nav-link">Features</a>
+                <a href="{% url 'landing' %}#tools" class="nav-link">Tools</a>
+                {% if user.is_authenticated %}
+                <a href="{% url 'dashboard' %}" class="nav-link">Dashboard</a>
+                {% endif %}
+            </div>
+
+            {% if user.is_authenticated %}
+            <div class="nav-right">
+                <a href="{% url 'dashboard' %}" class="nav-cta">Dashboard →</a>
+                <a href="{% url 'logout' %}" class="nav-link nav-link-dim">Logout</a>
+            </div>
+            {% else %}
+            <div class="nav-right">
+                <a href="{% url 'login' %}" class="nav-link">Sign in</a>
+                <a href="{% url 'register' %}" class="nav-cta">Get Started</a>
+            </div>
+            {% endif %}
+
+            <button class="nav-mobile-toggle" id="nav-toggle" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer" id="about">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <a href="{% url 'landing' %}" class="nav-brand">
+                    <div class="nav-logo">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                            <rect width="24" height="24" rx="7" fill="url(#logo-grad2)"/>
+                            <path d="M8 8h8M8 12h8M8 16h5" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+                            <defs>
+                                <linearGradient id="logo-grad2" x1="0" y1="0" x2="24" y2="24">
+                                    <stop stop-color="#34d399"/>
+                                    <stop offset="1" stop-color="#06b6d4"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <span class="brand-name">minimalist study planner</span>
+                </a>
+                <p class="footer-desc">A clean, focused way to organize study sessions, plan your schedule, build habits, and stay on course.</p>
+            </div>
+            <div class="footer-links-group">
+                <h4>Platform</h4>
+                <a href="{% url 'landing' %}#features">Features</a>
+                <a href="{% url 'landing' %}#tools">Tools</a>
+            </div>
+            <div class="footer-links-group">
+                <h4>Account</h4>
+                {% if user.is_authenticated %}
+                <a href="{% url 'dashboard' %}">Dashboard</a>
+                <a href="{% url 'flashcards' %}">Flashcards</a>
+                <a href="{% url 'focus_timer' %}">Focus Timer</a>
+                {% else %}
+                <a href="{% url 'register' %}">Create Account</a>
+                <a href="{% url 'login' %}">Sign In</a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Minimalist Study Planner. Built for students who mean business.</p>
+        </div>
+    </footer>
+
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

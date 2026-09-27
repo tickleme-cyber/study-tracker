@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block title %}Goals — Minimalist Study Planner{% endblock %}
+
+{% block content %}
+<section class="page-section">
+    <div class="page-container">
+        <div class="page-header">
+            <h1 class="page-title">🎯 <span class="text-gradient">Study Goals</span></h1>
+            <p class="page-subtitle">Set targets, track progress, celebrate wins</p>
+        </div>
+
+        <div class="goals-layout">
+            <!-- Add Goal Form -->
+            <div class="dash-card">
+                <h3 class="dash-card-title">+ New Goal</h3>
+                <form method="post" class="auth-form">
+                    {% csrf_token %}
+                    {% for field in form %}
+                    <div class="form-group">
+                        <label class="form-label">{{ field.label }}</label>
+                        {{ field }}
+                    </div>
+                    {% endfor %}
+                    <button type="submit" class="btn btn-primary btn-full">Create Goal</button>
+                </form>
+            </div>
+
+            <!-- Goals List -->
+            <div class="goals-list">
+                {% for goal in goals %}
+                <div class="goal-card {% if goal.completed %}goal-completed{% endif %}">
+                    <div class="goal-card-header">
+                        <h3 class="goal-card-title">{{ goal.title }}</h3>
+                        <span class="goal-priority priority-{{ goal.priority }}">{{ goal.get_priority_display }}</span>
+                    </div>
+                    {% if goal.description %}
+                    <p class="goal-card-desc">{{ goal.description }}</p>
+                    {% endif %}
+                    <div class="goal-card-meta">
+                        {% if goal.subject %}
+                        <span class="goal-subject">{{ goal.subject.icon }} {{ goal.subject.name }}</span>
+                        {% endif %}
+                        {% if goal.deadline %}
+                        <span class="goal-deadline">📅 {{ goal.deadline }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: {{ goal.progress_percent }}%"></div>
+                    </div>
+                    <div class="goal-card-footer">
+                        <span>{{ goal.completed_hours }}/{{ goal.target_hours }} hours</span>
+                        <span>{{ goal.progress_percent }}%</span>
+                    </div>
+                    {% if not goal.completed %}
+                    <button class="btn btn-outline btn-sm complete-goal-btn" data-goal-id="{{ goal.id }}">
+                        Mark Complete ✓
+                    </button>
+                    {% else %}
+                    <span class="goal-done-badge">✅ Completed</span>
+                    {% endif %}
+                </div>
+                {% empty %}
+                <div class="empty-state-large">
+                    <span class="empty-icon">🎯</span>
+                    <h3>No goals yet</h3>
+                    <p>Create your first study goal to start tracking progress!</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+{% block extra_js %}
+<script>
+document.querySelectorAll('.complete-goal-btn').forEach(btn => {
+    btn.addEventListener('click', async function() {
+        const goalId = this.dataset.goalId;
+        const csrfToken = document.cookie.match(/csrftoken=([^;]+)/)?.[1];
+        try {
+            await fetch('/api/complete-goal/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
+                body: JSON.stringify({ goal_id: goalId }),
+            });
+            location.reload();
+        } catch(e) { console.error(e); }
+    });
+});
+</script>
+{% endblock %}
+{% endblock %}
