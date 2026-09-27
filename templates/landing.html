@@ -1,0 +1,299 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Minimalist Study Planner — Study Smarter, Plan Better{% endblock %}
+
+{% block content %}
+<!-- ═══════════════════════════════════════════════════════════
+     HERO SECTION — cleaner, more minimal
+     ═══════════════════════════════════════════════════════════ -->
+<section class="hero" id="hero">
+    <div class="hero-bg-effects">
+        <div class="hero-glow hero-glow-1"></div>
+        <div class="hero-glow hero-glow-2"></div>
+        <div class="hero-grid-bg"></div>
+    </div>
+    <div class="hero-container">
+        <div class="hero-badge">
+            <span class="badge-dot"></span>
+            <span>Minimalist study planning, simplified</span>
+        </div>
+
+        <h1 class="hero-title">
+            <span class="hero-title-gradient">Study Smarter,</span>
+            <br>
+            <span class="hero-title-white">Plan Better.</span>
+        </h1>
+
+        <p class="hero-subtitle">
+            Plan your timetable. Track focus sessions. Flip flashcards. Build lasting streaks.
+            Everything a student needs — nothing they don't.
+        </p>
+
+        <div class="hero-cta-group">
+            <a href="{% url 'register' %}" class="btn btn-primary btn-lg">
+                Start Planning — Free
+            </a>
+            <a href="#tools" class="btn btn-ghost btn-lg">
+                Try the demos ↓
+            </a>
+        </div>
+
+        <div class="hero-stats">
+            <div class="hero-stat">
+                <div class="stat-number" data-target="2500">0</div>
+                <div class="stat-label">Students</div>
+            </div>
+            <div class="hero-stat-divider"></div>
+            <div class="hero-stat">
+                <div class="stat-number" data-target="95" data-suffix="%">0</div>
+                <div class="stat-label">Success Rate</div>
+            </div>
+            <div class="hero-stat-divider"></div>
+            <div class="hero-stat">
+                <div class="stat-number" data-target="4.9" data-decimal="true">0</div>
+                <div class="stat-label">Rating</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     FEATURES — 4 core features in a tighter grid
+     ═══════════════════════════════════════════════════════════ -->
+<section class="features-section" id="features">
+    <div class="section-container">
+        <div class="section-header">
+            <span class="section-tag">Core Features</span>
+            <h2 class="section-title">Everything that matters,<br>nothing that doesn't.</h2>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon icon-violet">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 16l4-8 4 4 4-6"/></svg>
+                </div>
+                <h3 class="feature-title">Progress Tracking</h3>
+                <p class="feature-desc">See your study hours, sessions, and streaks at a glance. Know exactly where you stand.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon icon-blue">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                </div>
+                <h3 class="feature-title">Focus Timer</h3>
+                <p class="feature-desc">Pomodoro sessions with a visual ring. Pick 25, 45, or 60 minutes and lock in.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon icon-emerald">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M9 16l2 2 4-4"/></svg>
+                </div>
+                <h3 class="feature-title">Habit Streaks</h3>
+                <p class="feature-desc">Build daily study habits and watch your streak grow. Consistency is everything.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon icon-amber">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M12 4v16M2 12h20"/></svg>
+                </div>
+                <h3 class="feature-title">Flashcards</h3>
+                <p class="feature-desc">Create decks, flip through cards, and review before exams. Simple spaced repetition.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     INTERACTIVE TOOLS — only the 6 that matter
+     ═══════════════════════════════════════════════════════════ -->
+<section class="tools-section" id="tools">
+    <div class="section-container">
+        <div class="section-header">
+            <span class="section-tag">Try It Now</span>
+            <h2 class="section-title">Working demos, right here.</h2>
+            <p class="section-desc">No sign-up needed. These are real, interactive previews.</p>
+        </div>
+
+        <!-- Row 1: Flashcards + Focus Timer (the big two) -->
+        <div class="tools-grid tools-grid-2">
+            <div class="demo-card">
+                <div class="demo-header">
+                    <div class="demo-icon icon-amber">🃏</div>
+                    <div class="demo-info">
+                        <h3>Flashcards</h3>
+                        <p>Tap to flip, arrows to browse</p>
+                    </div>
+                    <span class="demo-badge">LIVE</span>
+                </div>
+                <div class="demo-body">
+                    <div class="flashcard-demo" id="flashcard-demo">
+                        <div class="flashcard-inner" id="flashcard-inner">
+                            <div class="flashcard-front" id="flashcard-front">
+                                <p id="flashcard-front-text">Mitochondria</p>
+                            </div>
+                            <div class="flashcard-back" id="flashcard-back">
+                                <p id="flashcard-back-text">The powerhouse of the cell. Responsible for producing ATP through cellular respiration.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flashcard-nav">
+                        <button class="btn-fc-nav" id="fc-prev">← Prev</button>
+                        <span class="fc-counter" id="fc-counter">1 / 5</span>
+                        <button class="btn-fc-nav" id="fc-next">Next →</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="demo-card">
+                <div class="demo-header">
+                    <div class="demo-icon icon-rose">⏱️</div>
+                    <div class="demo-info">
+                        <h3>Focus Timer</h3>
+                        <p>25-min Pomodoro with progress ring</p>
+                    </div>
+                    <span class="demo-badge">LIVE</span>
+                </div>
+                <div class="demo-body demo-body-center">
+                    <div class="timer-ring-container">
+                        <svg class="timer-ring" viewBox="0 0 120 120">
+                            <circle class="timer-ring-bg" cx="60" cy="60" r="52" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="5"/>
+                            <circle class="timer-ring-progress" id="timer-ring-progress" cx="60" cy="60" r="52" fill="none" stroke="url(#timer-grad)" stroke-width="5" stroke-linecap="round" stroke-dasharray="326.73" stroke-dashoffset="0" transform="rotate(-90 60 60)"/>
+                            <defs>
+                                <linearGradient id="timer-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#34d399"/>
+                                    <stop offset="100%" stop-color="#06b6d4"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                        <div class="timer-display" id="demo-timer-display">25:00</div>
+                    </div>
+                    <button class="btn btn-primary" id="demo-timer-btn">
+                        ▶ Start Focus
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Row 2: Streak Calendar + Habit Tracker -->
+        <div class="tools-grid tools-grid-2">
+            <div class="demo-card">
+                <div class="demo-header">
+                    <div class="demo-icon icon-orange">🔥</div>
+                    <div class="demo-info">
+                        <h3>Streak Calendar</h3>
+                        <p>Hover to scrub the flame</p>
+                    </div>
+                    <span class="demo-badge">LIVE</span>
+                </div>
+                <div class="demo-body">
+                    <div class="streak-header">
+                        <div class="streak-flames">🔥🔥🔥</div>
+                        <div class="streak-info">
+                            <span class="streak-days">15 days</span>
+                            <span class="streak-sub">current streak</span>
+                        </div>
+                    </div>
+                    <div class="streak-calendar" id="streak-calendar"></div>
+                </div>
+            </div>
+
+            <div class="demo-card">
+                <div class="demo-header">
+                    <div class="demo-icon icon-emerald">✅</div>
+                    <div class="demo-info">
+                        <h3>Habit Tracker</h3>
+                        <p>Check off daily habits</p>
+                    </div>
+                    <span class="demo-badge">LIVE</span>
+                </div>
+                <div class="demo-body">
+                    <div class="habit-list" id="demo-habits">
+                        <label class="habit-item">
+                            <input type="checkbox" class="habit-check" data-habit="revise">
+                            <span class="habit-checkmark"></span>
+                            <span>Revise yesterday's notes</span>
+                        </label>
+                        <label class="habit-item">
+                            <input type="checkbox" class="habit-check" data-habit="mcqs">
+                            <span class="habit-checkmark"></span>
+                            <span>Solve 10 practice MCQs</span>
+                        </label>
+                        <label class="habit-item">
+                            <input type="checkbox" class="habit-check" data-habit="phone">
+                            <span class="habit-checkmark"></span>
+                            <span>No phone during study block</span>
+                        </label>
+                        <label class="habit-item">
+                            <input type="checkbox" class="habit-check" data-habit="reading">
+                            <span class="habit-checkmark"></span>
+                            <span>30 min reading</span>
+                        </label>
+                    </div>
+                    <p class="habit-counter" id="habit-counter">0 / 4 done today</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Row 3: Exam Countdown + Mood Tracker -->
+        <div class="tools-grid tools-grid-2">
+            <div class="demo-card">
+                <div class="demo-header">
+                    <div class="demo-icon icon-indigo">📅</div>
+                    <div class="demo-info">
+                        <h3>Exam Countdown</h3>
+                        <p>See your daily chapter target</p>
+                    </div>
+                    <span class="demo-badge">LIVE</span>
+                </div>
+                <div class="demo-body">
+                    <div class="exam-inputs">
+                        <div class="exam-field">
+                            <label class="form-label-sm">Exam Date</label>
+                            <input type="date" class="form-input" id="exam-date">
+                        </div>
+                        <div class="exam-field">
+                            <label class="form-label-sm">Chapters Left</label>
+                            <input type="number" class="form-input" id="exam-chapters" value="12" min="1" max="100">
+                        </div>
+                    </div>
+                    <p class="exam-result" id="exam-result">Enter your exam date to see a daily study plan.</p>
+                </div>
+            </div>
+
+            <div class="demo-card">
+                <div class="demo-header">
+                    <div class="demo-icon icon-yellow">😊</div>
+                    <div class="demo-info">
+                        <h3>Mood Tracker</h3>
+                        <p>Log 7 days of mood</p>
+                    </div>
+                    <span class="demo-badge">LIVE</span>
+                </div>
+                <div class="demo-body">
+                    <p class="mood-day-label" id="mood-day-label">Day 1 of 7 — how did it go?</p>
+                    <div class="mood-emojis" id="mood-emojis">
+                        <button class="mood-btn" data-mood="1">😞</button>
+                        <button class="mood-btn" data-mood="2">😐</button>
+                        <button class="mood-btn" data-mood="3">😊</button>
+                    </div>
+                    <div class="mood-week" id="mood-week"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="section-container">
+        <div class="cta-banner">
+            <h2 class="cta-title">Ready to build better study habits?</h2>
+            <p class="cta-subtitle">Free forever. No credit card. No distractions.</p>
+            <a href="{% url 'register' %}" class="btn btn-primary btn-lg">
+                Create Free Account →
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

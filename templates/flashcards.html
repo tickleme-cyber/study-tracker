@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Flashcards — Minimalist Study Planner{% endblock %}
+
+{% block content %}
+<section class="page-section">
+    <div class="page-container">
+        <div class="page-header">
+            <h1 class="page-title">🃏 <span class="text-gradient">Flashcards</span></h1>
+            <p class="page-subtitle">Create decks, study smart, ace your exams</p>
+        </div>
+
+        <div class="fc-layout">
+            <!-- Sidebar: Decks -->
+            <div class="fc-sidebar">
+                <h3 class="sidebar-title">Your Decks</h3>
+                {% for deck in decks %}
+                <a href="?deck={{ deck.id }}" class="deck-item {% if current_deck.id == deck.id %}active{% endif %}">
+                    <span>📦 {{ deck.name }}</span>
+                    <span class="deck-count">{{ deck.card_count }} cards</span>
+                </a>
+                {% empty %}
+                <p class="empty-state">No decks yet. Create one!</p>
+                {% endfor %}
+
+                <!-- New Deck Form -->
+                <form method="post" class="sidebar-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="new_deck" value="1">
+                    {{ deck_form.name }}
+                    {{ deck_form.subject }}
+                    <button type="submit" class="btn btn-primary btn-sm btn-full">+ New Deck</button>
+                </form>
+            </div>
+
+            <!-- Main: Study Area -->
+            <div class="fc-main">
+                {% if current_deck %}
+                <div class="fc-study-area" id="fc-study-area">
+                    <div class="flashcard-study" id="flashcard-study">
+                        <div class="flashcard-inner-study" id="fc-inner">
+                            <div class="flashcard-front-study" id="fc-front">
+                                <p>Click to start studying</p>
+                            </div>
+                            <div class="flashcard-back-study" id="fc-back">
+                                <p>Answer here</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fc-controls">
+                        <button class="btn btn-outline" id="fc-study-prev">← Previous</button>
+                        <span class="fc-study-counter" id="fc-study-counter">0 / 0</span>
+                        <button class="btn btn-outline" id="fc-study-next">Next →</button>
+                    </div>
+                </div>
+
+                <!-- Add Card Form -->
+                <div class="add-card-section">
+                    <h3>Add New Card to "{{ current_deck.name }}"</h3>
+                    <form method="post" class="card-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="new_card" value="1">
+                        <input type="hidden" name="deck_id" value="{{ current_deck.id }}">
+                        <div class="card-form-grid">
+                            <div class="form-group">
+                                <label class="form-label">Front</label>
+                                {{ card_form.front }}
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Back</label>
+                                {{ card_form.back }}
+                            </div>
+                        </div>
+                        {{ card_form.difficulty }}
+                        <button type="submit" class="btn btn-primary">Add Card</button>
+                    </form>
+                </div>
+                {% else %}
+                <div class="empty-state-large">
+                    <span class="empty-icon">🃏</span>
+                    <h3>Select a deck or create a new one</h3>
+                    <p>Start by creating a flashcard deck from the sidebar</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+{% block extra_js %}
+<script>
+const cards = {{ cards_json|safe }};
+let currentCard = 0;
+let flipped = false;
+
+function updateCard() {
+    if (!cards.length) return;
+    const card = cards[currentCard];
+    document.getElementById('fc-front').querySelector('p').textContent = card.front;
+    document.getElementById('fc-back').querySelector('p').textContent = card.back;
+    document.getElementById('fc-study-counter').textContent = `${currentCard + 1} / ${cards.length}`;
+    document.getElementById('fc-inner').classList.remove('flipped');
+    flipped = false;
+}
+
+document.getElementById('flashcard-study')?.addEventListener('click', () => {
+    const inner = document.getElementById('fc-inner');
+    inner.classList.toggle('flipped');
+    flipped = !flipped;
+});
+
+document.getElementById('fc-study-prev')?.addEventListener('click', () => {
+    if (currentCard > 0) { currentCard--; updateCard(); }
+});
+
+document.getElementById('fc-study-next')?.addEventListener('click', () => {
+    if (currentCard < cards.length - 1) { currentCard++; updateCard(); }
+});
+
+if (cards.length) updateCard();
+</script>
+{% endblock %}
+{% endblock %}

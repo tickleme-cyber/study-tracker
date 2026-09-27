@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard — Minimalist Study Planner{% endblock %}
+
+{% block content %}
+<section class="dashboard-section">
+    <div class="dashboard-container">
+        <!-- Welcome Header -->
+        <div class="dash-header">
+            <div>
+                <h1 class="dash-welcome">Welcome back, <span class="text-gradient">{{ user.username }}</span> 👋</h1>
+                <p class="dash-sub">Here's your study progress and planner overview</p>
+            </div>
+            <div class="dash-actions">
+                <a href="{% url 'focus_timer' %}" class="btn btn-primary"><span>⏱️</span> Start Focus</a>
+                <a href="{% url 'subjects' %}" class="btn btn-outline"><span>📚</span> Subjects</a>
+            </div>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-card-icon" style="background: linear-gradient(135deg, #10b981, #059669);">📊</div>
+                <div class="stat-card-info">
+                    <span class="stat-card-number">{{ total_hours }}</span>
+                    <span class="stat-card-label">Hours Studied</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-icon" style="background: linear-gradient(135deg, #3b82f6, #2563eb);">📝</div>
+                <div class="stat-card-info">
+                    <span class="stat-card-number">{{ total_sessions }}</span>
+                    <span class="stat-card-label">Sessions</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-icon" style="background: linear-gradient(135deg, #10b981, #059669);">🎯</div>
+                <div class="stat-card-info">
+                    <span class="stat-card-number">{{ completed_goals }}</span>
+                    <span class="stat-card-label">Goals Done</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-icon" style="background: linear-gradient(135deg, #f97316, #ea580c);">🔥</div>
+                <div class="stat-card-info">
+                    <span class="stat-card-number">{{ profile.current_streak }}</span>
+                    <span class="stat-card-label">Day Streak</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="dash-grid">
+            <!-- Streak Calendar -->
+            <div class="dash-card dash-card-wide">
+                <h3 class="dash-card-title">📅 Study Streak</h3>
+                <div class="dash-streak-calendar">
+                    {% for day in streak_data %}
+                    <div class="dash-streak-day {% if day.active %}active{% endif %}" title="{{ day.date }}"></div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Active Goals -->
+            <div class="dash-card">
+                <div class="dash-card-header">
+                    <h3 class="dash-card-title">🎯 Active Goals</h3>
+                    <a href="{% url 'goals' %}" class="dash-card-link">View All →</a>
+                </div>
+                {% if goals %}
+                {% for goal in goals %}
+                <div class="goal-item">
+                    <div class="goal-item-header">
+                        <span class="goal-name">{{ goal.title }}</span>
+                        <span class="goal-priority priority-{{ goal.priority }}">{{ goal.priority }}</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: {{ goal.progress_percent }}%"></div>
+                    </div>
+                    <span class="goal-progress-text">{{ goal.progress_percent }}%</span>
+                </div>
+                {% endfor %}
+                {% else %}
+                <p class="empty-state">No active goals. <a href="{% url 'goals' %}">Create one!</a></p>
+                {% endif %}
+            </div>
+
+            <!-- Daily Habits -->
+            <div class="dash-card">
+                <div class="dash-card-header">
+                    <h3 class="dash-card-title">✅ Daily Habits</h3>
+                </div>
+                {% if habits %}
+                {% for habit in habits %}
+                <label class="habit-item dash-habit">
+                    <input type="checkbox" class="habit-check dash-habit-check"
+                           data-habit-id="{{ habit.id }}"
+                           {% if habit.done_today %}checked{% endif %}>
+                    <span class="habit-checkmark"></span>
+                    <span>{{ habit.name }}</span>
+                    <span class="habit-streak-badge">🔥 {{ habit.streak_count }}</span>
+                </label>
+                {% endfor %}
+                {% else %}
+                <p class="empty-state">No habits yet. Add some below!</p>
+                {% endif %}
+                <div class="add-habit-form">
+                    <input type="text" class="form-input" id="new-habit-name" placeholder="Add new habit...">
+                    <button class="btn btn-primary btn-sm" id="add-habit-btn">Add</button>
+                </div>
+            </div>
+
+            <!-- Recent Sessions -->
+            <div class="dash-card">
+                <div class="dash-card-header">
+                    <h3 class="dash-card-title">📝 Recent Sessions</h3>
+                </div>
+                {% if recent_sessions %}
+                {% for session in recent_sessions %}
+                <div class="session-item">
+                    <div class="session-subject" style="border-left: 3px solid {{ session.subject.color }};">
+                        <span>{{ session.subject.icon }} {{ session.subject.name }}</span>
+                        <span class="session-duration">{{ session.duration_minutes }} min</span>
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <p class="empty-state">No sessions yet. <a href="{% url 'focus_timer' %}">Start studying!</a></p>
+                {% endif %}
+            </div>
+
+            <!-- Quick Study Tools -->
+            <div class="dash-card">
+                <h3 class="dash-card-title">🛠️ Quick Tools</h3>
+                <div class="quick-tools">
+                    <a href="{% url 'flashcards' %}" class="quick-tool-btn">
+                        <span>🃏</span> Flashcards
+                    </a>
+                    <a href="{% url 'focus_timer' %}" class="quick-tool-btn">
+                        <span>⏱️</span> Focus Timer
+                    </a>
+                    <a href="{% url 'goals' %}" class="quick-tool-btn">
+                        <span>🎯</span> Goals
+                    </a>
+                    <a href="{% url 'subjects' %}" class="quick-tool-btn">
+                        <span>📚</span> Subjects
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% block extra_js %}
+<script>
+// Dashboard habit toggle
+document.querySelectorAll('.dash-habit-check').forEach(cb => {
+    cb.addEventListener('change', async function() {
+        const habitId = this.dataset.habitId;
+        const csrfToken = document.cookie.match(/csrftoken=([^;]+)/)?.[1];
+        try {
+            const resp = await fetch('/api/toggle-habit/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken,
+                },
+                body: JSON.stringify({ habit_id: habitId }),
+            });
+            const data = await resp.json();
+            const badge = this.closest('.dash-habit').querySelector('.habit-streak-badge');
+            if (badge) badge.textContent = '🔥 ' + data.streak;
+        } catch(e) { console.error(e); }
+    });
+});
+
+// Add habit
+document.getElementById('add-habit-btn')?.addEventListener('click', async function() {
+    const input = document.getElementById('new-habit-name');
+    const name = input.value.trim();
+    if (!name) return;
+    const csrfToken = document.cookie.match(/csrftoken=([^;]+)/)?.[1];
+    try {
+        const resp = await fetch('/api/add-habit/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken,
+            },
+            body: JSON.stringify({ name }),
+        });
+        if (resp.ok) location.reload();
+    } catch(e) { console.error(e); }
+});
+</script>
+{% endblock %}
+{% endblock %}

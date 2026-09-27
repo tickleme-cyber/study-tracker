@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Focus Timer — Minimalist Study Planner{% endblock %}
+
+{% block content %}
+<section class="page-section">
+    <div class="page-container">
+        <div class="page-header">
+            <h1 class="page-title">⏱️ <span class="text-gradient">Focus Timer</span></h1>
+            <p class="page-subtitle">Stay in the zone with Pomodoro technique</p>
+        </div>
+
+        <div class="timer-page-layout">
+            <div class="timer-main-card">
+                <div class="timer-subject-select">
+                    <label class="form-label">Studying:</label>
+                    <select class="form-input" id="timer-subject">
+                        <option value="">Select subject...</option>
+                        {% for subject in subjects %}
+                        <option value="{{ subject.id }}">{{ subject.icon }} {{ subject.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="timer-ring-container timer-ring-large">
+                    <svg class="timer-ring" viewBox="0 0 200 200">
+                        <circle class="timer-ring-bg" cx="100" cy="100" r="88" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="8"/>
+                        <circle class="timer-ring-progress" id="page-timer-ring" cx="100" cy="100" r="88" fill="none" stroke="url(#page-timer-grad)" stroke-width="8" stroke-linecap="round" stroke-dasharray="552.92" stroke-dashoffset="0" transform="rotate(-90 100 100)"/>
+                        <defs>
+                            <linearGradient id="page-timer-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#10b981"/>
+                                <stop offset="100%" stop-color="#06b6d4"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <div class="timer-display timer-display-large" id="page-timer-display">25:00</div>
+                </div>
+
+                <div class="timer-duration-btns">
+                    <button class="btn btn-outline timer-dur active" data-minutes="25">25 min</button>
+                    <button class="btn btn-outline timer-dur" data-minutes="45">45 min</button>
+                    <button class="btn btn-outline timer-dur" data-minutes="60">60 min</button>
+                </div>
+
+                <button class="btn btn-primary btn-lg" id="page-timer-btn">
+                    <span>▶</span> Start Focus
+                </button>
+
+                <div class="timer-sounds timer-sounds-large">
+                    <button class="sound-btn active" data-sound="none" title="No sound">🔇</button>
+                    <button class="sound-btn" data-sound="rain" title="Rain">🌧️</button>
+                    <button class="sound-btn" data-sound="forest" title="Forest">🌲</button>
+                    <button class="sound-btn" data-sound="headphones" title="Lo-fi">🎧</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% block extra_js %}
+<script>
+(function() {
+    let totalSeconds = 25 * 60;
+    let remaining = totalSeconds;
+    let interval = null;
+    let running = false;
+    const display = document.getElementById('page-timer-display');
+    const ring = document.getElementById('page-timer-ring');
+    const btn = document.getElementById('page-timer-btn');
+    const circumference = 2 * Math.PI * 88;
+
+    function updateDisplay() {
+        const m = Math.floor(remaining / 60);
+        const s = remaining % 60;
+        display.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+        const progress = (totalSeconds - remaining) / totalSeconds;
+        ring.style.strokeDashoffset = circumference * (1 - progress);
+    }
+
+    document.querySelectorAll('.timer-dur').forEach(b => {
+        b.addEventListener('click', function() {
+            if (running) return;
+            document.querySelectorAll('.timer-dur').forEach(x => x.classList.remove('active'));
+            this.classList.add('active');
+            totalSeconds = parseInt(this.dataset.minutes) * 60;
+            remaining = totalSeconds;
+            updateDisplay();
+        });
+    });
+
+    btn.addEventListener('click', function() {
+        if (running) {
+            clearInterval(interval);
+            running = false;
+            btn.innerHTML = '<span>▶</span> Start Focus';
+        } else {
+            running = true;
+            btn.innerHTML = '<span>⏸</span> Pause';
+            interval = setInterval(() => {
+                remaining--;
+                updateDisplay();
+                if (remaining <= 0) {
+                    clearInterval(interval);
+                    running = false;
+                    btn.innerHTML = '<span>▶</span> Start Focus';
+                    // Log session
+                    const subjectId = document.getElementById('timer-subject').value;
+                    if (subjectId) {
+                        const csrfToken = document.cookie.match(/csrftoken=([^;]+)/)?.[1];
+                        fetch('/api/log-session/', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
+                            body: JSON.stringify({ subject_id: subjectId, duration_minutes: Math.round(totalSeconds / 60) }),
+                        });
+                    }
+                    remaining = totalSeconds;
+                    alert('🎉 Focus session complete!');
+                }
+            }, 1000);
+        }
+    });
+
+    updateDisplay();
+})();
+</script>
+{% endblock %}
+{% endblock %}
